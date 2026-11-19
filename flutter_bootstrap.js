@@ -35,8 +35,13 @@ if (!window._flutter) {
 }
 _flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27da0","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}]};
 
-_flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "4266748167" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
-  }
-});
+
+// Уникальная метка сборки в URL, чтобы иконка «На экран Домой» не держала старую версию из кэша.
+(function () {
+  var v = "2339386556" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  (_flutter.buildConfig.builds || []).forEach(function (b) {
+    if (b.mainJsPath) b.mainJsPath += '?v=' + v;
+  });
+})();
+
+_flutter.loader.load();
