@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Karsi — панель</title>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA; --surface: #FFFFFF; --border: #ECECEC; --ink: #1A1A1A; --soft: #6B6B6B; --muted: #8A8A8A;
+      --accent: #DB3F30; --accent-soft: #FDE7E6; --ok: #1C8A5A; --ok-soft: #E3F4EC; --field: #F0F0F0;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Manrope', system-ui, sans-serif; font-size: 14.5px; }
+    button, input { font: inherit; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    header img { width: 36px; height: 36px; }
+    header h1 { font-size: 20px; font-weight: 800; margin: 0; flex: 1; }
+    .btn { border: 0; border-radius: 12px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+    .btn-danger { background: var(--accent-soft); color: var(--accent); }
+    .btn-ok { background: var(--ok-soft); color: var(--ok); }
+    .btn:disabled { opacity: .5; cursor: default; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+    #login { max-width: 360px; margin: 12vh auto 0; padding: 24px; }
+    #login h2 { margin: 0 0 16px; font-size: 22px; font-weight: 800; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--soft); margin: 12px 0 6px; }
+    input[type=email], input[type=password], input[type=search] {
+      width: 100%; height: 48px; border: 1px solid var(--border); border-radius: 14px; padding: 0 14px; background: var(--surface); outline: none;
+    }
+    input:focus { border-color: var(--accent); }
+    #login .btn { width: 100%; height: 50px; margin-top: 18px; }
+    .error { color: #C92A2A; font-size: 13px; font-weight: 600; margin-top: 10px; min-height: 18px; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .stat { padding: 14px; }
+    .stat b { display: block; font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--soft); font-size: 12.5px; font-weight: 600; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 14px; }
+    .toolbar input { flex: 1; background: var(--field); border-color: transparent; }
+    .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chip { border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 13px; color: var(--soft); cursor: pointer; }
+    .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .list { display: flex; flex-direction: column; }
+    .row { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr auto; gap: 12px; align-items: center; padding: 14px 16px; border-bottom: 1px solid #F0F0F0; }
+    .row:last-child { border-bottom: 0; }
+    .row.head { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; padding-top: 12px; padding-bottom: 12px; }
+    .name { font-weight: 700; }
+    .sub { color: var(--soft); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .code { font-variant-numeric: tabular-nums; font-weight: 600; letter-spacing: .03em; }
+    .pill { display: inline-block; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; }
+    .pill.ok { background: var(--ok-soft); color: var(--ok); }
+    .pill.off { background: var(--accent-soft); color: var(--accent); }
+    .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+    .actions .btn { padding: 8px 10px; font-size: 13px; }
+    .empty { padding: 40px 16px; text-align: center; color: var(--soft); }
+    .note { color: var(--muted); font-size: 12.5px; margin-top: 14px; line-height: 1.4; }
+    [hidden] { display: none !important; }
+    @media (max-width: 720px) {
+      .row.head { display: none; }
+      .row { grid-template-columns: 1fr auto; grid-template-areas: "who status" "code code" "seen seen" "act act"; gap: 6px 12px; }
+      .row .c-who { grid-area: who; } .row .c-status { grid-area: status; text-align: right; }
+      .row .c-code { grid-area: code; } .row .c-seen { grid-area: seen; } .row .actions { grid-area: act; justify-content: flex-start; margin-top: 6px; }
+      .stat b { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="../icons/splash-logo.png" alt="">
+      <h1>Karsi — панель</h1>
+      <button id="logout" class="btn btn-ghost" hidden>Выйти</button>
+    </header>
+
+    <form id="login" class="card" hidden>
+      <h2>Вход для администратора</h2>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Пароль</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="btn btn-primary" type="submit">Войти</button>
+      <div class="error" id="loginError"></div>
+    </form>
+
+    <main id="panel" hidden>
+      <div class="stats">
+        <div class="card stat"><b id="sTotal">0</b><span>Всего</span></div>
+        <div class="card stat"><b id="sActive">0</b><span>Заходили за 7 дней</span></div>
+        <div class="card stat"><b id="sOff">0</b><span>Отключено</span></div>
+      </div>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Поиск: имя, телефон или промокод">
+      </div>
+      <div class="filters" id="filters">
+        <button class="chip on" data-f="all">Все</button>
+        <button class="chip" data-f="on">С доступом</button>
+        <button class="chip" data-f="off">Отключённые</button>
+      </div>
+      <div class="card list" id="list"></div>
+      <p class="note">
+        «Отключить» закрывает доступ одному человеку. «Блок кода» закрывает доступ всем, кто вошёл по этому промокоду,
+        и не даёт активировать его снова. Изменения применяются при следующем открытии приложения.
+        Пользователи Android-приложения здесь не отображаются.
+      </p>
+    </main>
+    <div class="error" id="panelError"></div>
+  </div>
+
+  <script type="module">
+    import { firebaseConfig } from './config.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }
+      from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc }
+      from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+    const $ = (id) => document.getElementById(id);
+    if (!firebaseConfig.apiKey) {
+      $('panelError').textContent = 'Firebase ещё не настроен: заполните admin/config.js.';
+      throw new Error('no config');
+    }
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let users = [];
+    let blockedCodes = new Set();
+    let filter = 'all';
+    let unsub = [];
+
+    const fmtDate = (ts) => ts ? ts.toDate().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+    const fmtCode = (c) => (c || '').replace(/(.{4})(?=.)/g, '$1-');
+    const isOff = (u) => u.disabled === true || blockedCodes.has(u.code);
+
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text !== undefined) e.textContent = text; // только textContent — данные пользователей не попадают в HTML
+      return e;
+    }
+
+    function render() {
+      const q = $('search').value.trim().toLowerCase().replace(/[\s-]/g, '');
+      const weekAgo = Date.now() - 7 * 864e5;
+      $('sTotal').textContent = users.length;
+      $('sActive').textContent = users.filter((u) => u.lastSeen && u.lastSeen.toMillis() > weekAgo).length;
+      $('sOff').textContent = users.filter(isOff).length;
+
+      const rows = users
+        .filter((u) => filter === 'all' || (filter === 'off') === isOff(u))
+        .filter((u) => !q || [u.name, u.phone, u.code].some((v) => (v || '').toLowerCase().replace(/[\s-]/g, '').includes(q)))
+        .sort((a, b) => (b.lastSeen?.toMillis() || 0) - (a.lastSeen?.toMillis() || 0));
+
+      const list = $('list');
+      list.replaceChildren();
+      const head = el('div', 'row head');
+      ['Пользователь', 'Промокод', 'Последний вход', 'Статус', ''].forEach((t) => head.append(el('div', '', t)));
+      list.append(head);
+      if (!rows.length) { list.append(el('div', 'empty', users.length ? 'Ничего не найдено' : 'Пока никто не зарегистрировался')); return; }
+
+      for (const u of rows) {
+        const row = el('div', 'row');
+        const who = el('div', 'c-who'); who.append(el('div', 'name', u.name || 'Без имени'), el('div', 'sub', u.phone || ''));
+        const code = el('div', 'c-code'); code.append(el('div', 'code', fmtCode(u.code)), el('div', 'sub', 'с ' + fmtDate(u.createdAt)));
+        const seen = el('div', 'c-seen sub', fmtDate(u.lastSeen));
+        const status = el('div', 'c-status');
+        const codeOff = blockedCodes.has(u.code);
+        status.append(el('span', 'pill ' + (isOff(u) ? 'off' : 'ok'), codeOff ? 'Код заблокирован' : (u.disabled ? 'Отключён' : 'Доступ есть')));
+
+        const actions = el('div', 'actions');
+        const bUser = el('button', 'btn ' + (u.disabled ? 'btn-ok' : 'btn-danger'), u.disabled ? 'Включить' : 'Отключить');
+        bUser.onclick = () => act(bUser, () => updateDoc(doc(db, 'users', u.id), { disabled: !u.disabled }));
+        const bCode = el('button', 'btn btn-ghost', codeOff ? 'Разблок. код' : 'Блок кода');
+        bCode.onclick = () => act(bCode, () => setDoc(doc(db, 'codes', u.code), { disabled: !codeOff, updatedAt: new Date() }));
+        const bDel = el('button', 'btn btn-ghost', 'Удалить');
+        bDel.onclick = () => {
+          if (!confirm('Удалить запись «' + (u.name || 'без имени') + '»? Если человек снова откроет приложение, он появится заново.')) return;
+          act(bDel, () => deleteDoc(doc(db, 'users', u.id)));
+        };
+        actions.append(bUser, bCode, bDel);
+
+        row.append(who, code, seen, status, actions);
+        list.append(row);
+      }
+    }
+
+    async function act(button, fn) {
+      button.disabled = true;
+      try { await fn(); $('panelError').textContent = ''; }
+      catch (e) { $('panelError').textContent = 'Не удалось сохранить: ' + e.message; }
+      finally { button.disabled = false; }
+    }
+
+    $('search').addEventListener('input', render);
+    $('filters').addEventListener('click', (e) => {
+      const f = e.target.dataset.f; if (!f) return;
+      filter = f;
+      document.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.f === f));
+      render();
+    });
+
+    $('login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $('loginError').textContent = '';
+      try { await signInWithEmailAndPassword(auth, $('email').value.trim(), $('password').value); }
+      catch { $('loginError').textContent = 'Неверный email или пароль'; }
+    });
+    $('logout').onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+      unsub.forEach((u) => u()); unsub = [];
+      const admin = user && !user.isAnonymous;
+      $('login').hidden = !!admin; $('panel').hidden = !admin; $('logout').hidden = !admin;
+      if (!admin) return;
+      const onErr = (e) => { $('panelError').textContent = 'Нет доступа к данным: ' + e.message; };
+      unsub.push(onSnapshot(collection(db, 'users'), (s) => { users = s.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, onErr));
+      unsub.push(onSnapshot(collection(db, 'codes'), (s) => { blockedCodes = new Set(s.docs.filter((d) => d.data().disabled).map((d) => d.id)); render(); }, onErr));
+    });
+  </script>
+</body>
+</html>

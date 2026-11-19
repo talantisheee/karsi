@@ -449,6 +449,18 @@ class CompiledApp {
       _1342: () => typeof dartUseDateNowForTicks !== "undefined",
       _1343: () => 1000 * performance.now(),
       _1344: () => Date.now(),
+      _1345: () => {
+        // On browsers return `globalThis.location.href`
+        if (globalThis.location != null) {
+          return globalThis.location.href;
+        }
+        return null;
+      },
+      _1346: () => {
+        return typeof process != "undefined" &&
+               Object.prototype.toString.call(process) == "[object process]" &&
+               process.platform == "win32"
+      },
       _1347: () => new WeakMap(),
       _1348: (map, o) => map.get(o),
       _1349: (map, o, v) => map.set(o, v),
@@ -700,6 +712,16 @@ class CompiledApp {
       _1620: x0 => x0.continue(),
       _1621: (module,f) => finalizeWrapper(f, function(x0) { return module.exports._1621(f,arguments.length,x0) }),
       _1622: (module,f) => finalizeWrapper(f, function(x0) { return module.exports._1622(f,arguments.length,x0) }),
+      _1626: () => new AbortController(),
+      _1627: x0 => x0.abort(),
+      _1628: (x0,x1,x2,x3,x4,x5) => ({method: x0,headers: x1,body: x2,credentials: x3,redirect: x4,signal: x5}),
+      _1629: (x0,x1) => globalThis.fetch(x0,x1),
+      _1630: (x0,x1) => x0.get(x1),
+      _1631: (module,f) => finalizeWrapper(f, function(x0,x1,x2) { return module.exports._1631(f,arguments.length,x0,x1,x2) }),
+      _1632: (x0,x1) => x0.forEach(x1),
+      _1633: x0 => x0.getReader(),
+      _1634: x0 => x0.cancel(),
+      _1635: x0 => x0.read(),
       _1636: () => globalThis.pdfjsLib,
       _1637: () => globalThis.pdfRenderOptions,
       _1638: (x0,x1) => x0.getDocument(x1),
@@ -726,6 +748,7 @@ class CompiledApp {
       _1722: (a, i) => a.splice(i, 1),
       _1723: (a, s) => a.join(s),
       _1724: (a, s, e) => a.slice(s, e),
+      _1726: (a, b) => a == b ? 0 : (a > b ? 1 : -1),
       _1727: a => a.length,
       _1729: (a, i) => a[i],
       _1730: (a, i, v) => a[i] = v,
@@ -837,11 +860,19 @@ class CompiledApp {
       _4011: x0 => x0.localStorage,
       _4344: x0 => x0.length,
       _6249: x0 => x0.target,
+      _6289: x0 => x0.signal,
       _6361: () => globalThis.document,
       _6443: x0 => x0.body,
       _6779: (x0,x1) => { x0.id = x1 },
+      _8125: x0 => x0.value,
+      _8127: x0 => x0.done,
       _8312: x0 => x0.name,
       _8318: x0 => x0.length,
+      _8821: x0 => x0.url,
+      _8823: x0 => x0.status,
+      _8825: x0 => x0.statusText,
+      _8826: x0 => x0.headers,
+      _8827: x0 => x0.body,
       _10283: x0 => x0.result,
       _10284: x0 => x0.error,
       _10289: (x0,x1) => { x0.onsuccess = x1 },
@@ -854,6 +885,7 @@ class CompiledApp {
       _11598: (x0,x1) => { x0.opacity = x1 },
       _11712: (x0,x1) => { x0.position = x1 },
       _12004: (x0,x1) => { x0.top = x1 },
+      _12444: x0 => x0.name,
 
     };
 
