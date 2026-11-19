@@ -38,7 +38,7 @@ _flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27d
 
 // Уникальная метка сборки в URL, чтобы иконка «На экран Домой» не держала старую версию из кэша.
 (function () {
-  var v = "4235725055" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  var v = "1778975393" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   (_flutter.buildConfig.builds || []).forEach(function (b) {
     ['mainJsPath', 'mainWasmPath', 'jsSupportRuntimePath'].forEach(function (k) {
       if (b[k]) b[k] += '?v=' + v;
