@@ -41,7 +41,7 @@ _flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27d
 // 1) при запуске берём актуальную версию из version.json (мимо кэша) и грузим код с этой меткой;
 // 2) при возврате в приложение проверяем version.json и перезагружаемся, если вышла новая версия.
 (function () {
-  var fallback = "579424648" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  var fallback = "853645145" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   var loaded = null;
   var started = false;
 

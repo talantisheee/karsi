@@ -93262,11 +93262,11 @@ B.b.F(o,l)}p.push(A.c4(o,B.p,B.l,B.m))
 B.b.F(r,p)}return A.bh(r,B.p,B.l,B.m)}}
 A.aBO.prototype={
 $1(a){var s,r=null,q=a.b,p=t.p,o=A.b([],p),n=a.a
-if(n!=null)o.push(new A.i7(n,36,r,r))
+if(n!=null)o.push(new A.i7(n,40,r,r))
 else o.push(B.a4D)
 n=a.d
 if(n!=null){s=A.c0(5)
-o.push(A.ld(r,A.bD(r,A.a6(n,r,r,r,r,A.a5(9,B.ht,r,r,!0,800),r,r),B.n,r,r,new A.b8(B.kb,r,r,s,r,r,B.z),r,r,r,B.KJ,r,r,r),r,r,r,-14,-6,r))}return new A.bT(A.bh(A.b([A.cA(A.fY(B.C,o,B.n,B.aH,r),40,40),B.dr,A.a6(q,1,B.BO,r,!1,A.a5(11.5,this.b.f,1.2,r,!1,600),B.aI,r)],p),B.p,B.l,B.m),new A.aBP(a,this.a),q,r)},
+o.push(A.ld(r,A.bD(r,A.a6(n,r,r,r,r,A.a5(9,B.ht,r,r,!0,800),r,r),B.n,r,r,new A.b8(B.kb,r,r,s,r,r,B.z),r,r,r,B.KJ,r,r,r),r,r,r,-14,-6,r))}return new A.bT(A.bh(A.b([A.cA(A.fY(B.C,o,B.n,B.aH,r),44,44),B.dr,A.a6(q,1,B.BO,r,!1,A.a5(11.5,this.b.f,1.2,r,!1,600),B.aI,r)],p),B.p,B.l,B.m),new A.aBP(a,this.a),q,r)},
 $S:569}
 A.aBP.prototype={
 $0(){var s=this.a,r=s.c,q=this.b
@@ -93278,7 +93278,7 @@ A.atp.prototype={
 $0(){return A.cm(this.a,!1).dX(A.aIj())},
 $S:0}
 A.Zx.prototype={
-G(a){return A.B_(A.c0(8),A.aNe("assets/images/magnum.png",B.C,B.nz,36,36))}}
+G(a){return A.B_(A.c0(9),A.aNe("assets/images/magnum.png",B.C,B.nz,40,40))}}
 A.Ic.prototype={
 G(a){var s,r=null,q=A.a5(17,t.R.a(A.X(a).c.i(0,A.ax(t.b))).f,1.25,r,!0,600),p=A.bD(B.C,this.c,B.n,r,r,new A.b8(B.kb,r,r,A.c0(14),r,r,B.z),r,56,r,r,r,r,56),o=t.VO,n=A.b([],o),m=this.e
 if(m!=null){s=A.c0(20)
@@ -94001,7 +94001,7 @@ a0.a=a2
 a3=s===a2
 a4=a3?m:B.L
 a5=new A.aS(12,12)
-c.push(new A.i1(1,B.bT,new A.bT(A.v0(B.C,A.a6(a1.b,a6,a6,a6,a6,A.a5(13,a3?B.k:g,a6,a6,!1,700),a6,a6),new A.b8(a4,a6,a6,new A.cz(a5,a5,a5,a5),a6,a6,B.z),B.cl,40,a6,a6,a6),new A.aoz(a0,a8),a6,a6),a6))}return new A.iJ(a7.a,!0,A.e6(!1,A.kY(A.b([new A.bT(n,new A.aoA(a8),a6,a6),B.b_,p,B.bH,j,B.b_,i,B.bH,new A.bT(f,new A.aoB(a8),a6,a6),B.b_,l,B.bH,A.bD(a6,A.c4(c,B.p,B.l,B.m),B.n,a6,a6,new A.b8(a7.b,a6,d,e,a6,a6,B.z),a6,a6,a6,B.KA,a6,a6,a6),B.j2,A.eU(A.a6("Karsi 1.0.7",a6,a6,a6,a6,A.a5(12,o,a6,a6,!1,500),a6,a6),a6,a6)],k),B.p1,B.X),B.M,!0),a6)}}
+c.push(new A.i1(1,B.bT,new A.bT(A.v0(B.C,A.a6(a1.b,a6,a6,a6,a6,A.a5(13,a3?B.k:g,a6,a6,!1,700),a6,a6),new A.b8(a4,a6,a6,new A.cz(a5,a5,a5,a5),a6,a6,B.z),B.cl,40,a6,a6,a6),new A.aoz(a0,a8),a6,a6),a6))}return new A.iJ(a7.a,!0,A.e6(!1,A.kY(A.b([new A.bT(n,new A.aoA(a8),a6,a6),B.b_,p,B.bH,j,B.b_,i,B.bH,new A.bT(f,new A.aoB(a8),a6,a6),B.b_,l,B.bH,A.bD(a6,A.c4(c,B.p,B.l,B.m),B.n,a6,a6,new A.b8(a7.b,a6,d,e,a6,a6,B.z),a6,a6,a6,B.KA,a6,a6,a6),B.j2,A.eU(A.a6("Karsi 1.0.8",a6,a6,a6,a6,A.a5(12,o,a6,a6,!1,500),a6,a6),a6,a6)],k),B.p1,B.X),B.M,!0),a6)}}
 A.aox.prototype={
 $1(a){return a.a},
 $S:216}
