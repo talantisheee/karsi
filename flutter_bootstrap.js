@@ -36,14 +36,41 @@ if (!window._flutter) {
 _flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27da0","builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
 
-// Уникальная метка сборки в URL, чтобы иконка «На экран Домой» не держала старую версию из кэша.
+// Обновление без ручной переустановки.
+// Иконка «На экран Домой» на iPhone держит страницу в памяти и кэше, поэтому:
+// 1) при запуске берём актуальную версию из version.json (мимо кэша) и грузим код с этой меткой;
+// 2) при возврате в приложение проверяем version.json и перезагружаемся, если вышла новая версия.
 (function () {
-  var v = "1778975393" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
-  (_flutter.buildConfig.builds || []).forEach(function (b) {
-    ['mainJsPath', 'mainWasmPath', 'jsSupportRuntimePath'].forEach(function (k) {
-      if (b[k]) b[k] += '?v=' + v;
+  var fallback = "579424648" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  var loaded = null;
+  var started = false;
+
+  function fetchVersion() {
+    return fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { return j.version + '+' + j.build_number; });
+  }
+
+  function start(v) {
+    if (started) return;
+    started = true;
+    (_flutter.buildConfig.builds || []).forEach(function (b) {
+      ['mainJsPath', 'mainWasmPath', 'jsSupportRuntimePath'].forEach(function (k) {
+        if (b[k]) b[k] += '?v=' + encodeURIComponent(v);
+      });
     });
+    _flutter.loader.load();
+  }
+
+  var timer = setTimeout(function () { start(fallback); }, 3000); // без сети не ждём
+  fetchVersion()
+    .then(function (v) { loaded = v; clearTimeout(timer); start(v); })
+    .catch(function () { clearTimeout(timer); start(fallback); });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible' || !loaded) return;
+    fetchVersion()
+      .then(function (v) { if (v !== loaded) location.reload(); })
+      .catch(function () {});
   });
 })();
-
-_flutter.loader.load();
