@@ -103,8 +103,9 @@
       </div>
       <div class="card list" id="list"></div>
       <p class="note">
-        «Отключить» закрывает доступ одному человеку. «Блок кода» закрывает доступ всем, кто вошёл по этому промокоду,
-        и не даёт активировать его снова. Изменения применяются при следующем открытии приложения.
+        Коды одноразовые: код закрепляется за первым, кто его ввёл. «Отключить» закрывает доступ одному человеку.
+        «Блок кода» закрывает доступ по этому промокоду. «Отвязать код» освобождает его — например, если человек
+        сменил телефон или очистил Safari и не может войти. Изменения применяются при следующем открытии приложения.
         Пользователи Android-приложения здесь не отображаются.
       </p>
     </main>
@@ -116,7 +117,7 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }
       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc }
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc, deleteField }
       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
     const $ = (id) => document.getElementById(id);
@@ -130,13 +131,16 @@
     const db = getFirestore(app);
 
     let users = [];
-    let blockedCodes = new Set();
+    let codes = new Map(); // код → { disabled, claimedBy }
     let filter = 'all';
     let unsub = [];
 
     const fmtDate = (ts) => ts ? ts.toDate().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
     const fmtCode = (c) => (c || '').replace(/(.{4})(?=.)/g, '$1-');
-    const isOff = (u) => u.disabled === true || blockedCodes.has(u.code);
+    const codeOff = (c) => codes.get(c)?.disabled === true;
+    const codeOwner = (c) => codes.get(c)?.claimedBy;
+    const takenByOther = (u) => !!codeOwner(u.code) && codeOwner(u.code) !== u.id;
+    const isOff = (u) => u.disabled === true || codeOff(u.code) || takenByOther(u);
 
     function el(tag, cls, text) {
       const e = document.createElement(tag);
@@ -170,20 +174,28 @@
         const code = el('div', 'c-code'); code.append(el('div', 'code', fmtCode(u.code)), el('div', 'sub', 'с ' + fmtDate(u.createdAt)));
         const seen = el('div', 'c-seen sub', fmtDate(u.lastSeen));
         const status = el('div', 'c-status');
-        const codeOff = blockedCodes.has(u.code);
-        status.append(el('span', 'pill ' + (isOff(u) ? 'off' : 'ok'), codeOff ? 'Код заблокирован' : (u.disabled ? 'Отключён' : 'Доступ есть')));
+        const off = codeOff(u.code);
+        const label = u.disabled ? 'Отключён' : off ? 'Код заблокирован' : takenByOther(u) ? 'Код у другого' : 'Доступ есть';
+        status.append(el('span', 'pill ' + (isOff(u) ? 'off' : 'ok'), label));
 
         const actions = el('div', 'actions');
         const bUser = el('button', 'btn ' + (u.disabled ? 'btn-ok' : 'btn-danger'), u.disabled ? 'Включить' : 'Отключить');
         bUser.onclick = () => act(bUser, () => updateDoc(doc(db, 'users', u.id), { disabled: !u.disabled }));
-        const bCode = el('button', 'btn btn-ghost', codeOff ? 'Разблок. код' : 'Блок кода');
-        bCode.onclick = () => act(bCode, () => setDoc(doc(db, 'codes', u.code), { disabled: !codeOff, updatedAt: new Date() }));
+        const bCode = el('button', 'btn btn-ghost', off ? 'Разблок. код' : 'Блок кода');
+        bCode.onclick = () => act(bCode, () => setDoc(doc(db, 'codes', u.code), { disabled: !off, updatedAt: new Date() }, { merge: true }));
+        const bFree = el('button', 'btn btn-ghost', 'Отвязать код');
+        bFree.title = 'Освободить код: следующий, кто его введёт, сможет войти';
+        bFree.hidden = !codeOwner(u.code);
+        bFree.onclick = () => {
+          if (!confirm('Отвязать код ' + fmtCode(u.code) + '? Следующий, кто его введёт, сможет войти. Текущий владелец потеряет доступ, если код займёт другой.')) return;
+          act(bFree, () => updateDoc(doc(db, 'codes', u.code), { claimedBy: deleteField(), claimedAt: deleteField() }));
+        };
         const bDel = el('button', 'btn btn-ghost', 'Удалить');
         bDel.onclick = () => {
           if (!confirm('Удалить запись «' + (u.name || 'без имени') + '»? Если человек снова откроет приложение, он появится заново.')) return;
           act(bDel, () => deleteDoc(doc(db, 'users', u.id)));
         };
-        actions.append(bUser, bCode, bDel);
+        actions.append(bUser, bCode, bFree, bDel);
 
         row.append(who, code, seen, status, actions);
         list.append(row);
@@ -220,7 +232,7 @@
       if (!admin) return;
       const onErr = (e) => { $('panelError').textContent = 'Нет доступа к данным: ' + e.message; };
       unsub.push(onSnapshot(collection(db, 'users'), (s) => { users = s.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, onErr));
-      unsub.push(onSnapshot(collection(db, 'codes'), (s) => { blockedCodes = new Set(s.docs.filter((d) => d.data().disabled).map((d) => d.id)); render(); }, onErr));
+      unsub.push(onSnapshot(collection(db, 'codes'), (s) => { codes = new Map(s.docs.map((d) => [d.id, d.data()])); render(); }, onErr));
     });
   </script>
 </body>
