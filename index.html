@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Подставляется из `flutter build web --base-href` (для GitHub Pages — /имя-репозитория/). -->
+  <base href="/karsi/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="Karsi — банк, платежи и магазин в одном приложении">
+  <meta name="theme-color" content="#FAFAFA">
+
+  <!-- Установка на экран «Домой» в iOS -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Karsi">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>Karsi</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    html, body { margin: 0; height: 100%; background: #FAFAFA; overscroll-behavior: none; }
+    #splash {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: #FAFAFA; transition: opacity .25s ease;
+    }
+    #splash img { width: 96px; height: 96px; }
+    #splash.hidden { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="splash"><img src="icons/splash-logo.png" alt="Karsi"></div>
+
+  <!-- PDF.js для просмотра документов (лежит локально, без CDN). -->
+  <script src="pdfjs/pdf.min.mjs" type="module"></script>
+  <script type="module">
+    var { pdfjsLib } = globalThis;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs/pdf.worker.min.mjs', document.baseURI).href;
+    // pdfx 4.6.82 ожидает эту переменную; cmaps нужны только для редких азиатских шрифтов.
+    globalThis.pdfRenderOptions = { cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/', cMapPacked: true };
+  </script>
+
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('splash');
+      s.classList.add('hidden');
+      setTimeout(function () { s.remove(); }, 300);
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
