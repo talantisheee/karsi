@@ -33,14 +33,16 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27da0","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}]};
+_flutter.buildConfig = {"engineRevision":"c416acfeb8126e097f758c664aaa3da929e27da0","builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
 
 // Уникальная метка сборки в URL, чтобы иконка «На экран Домой» не держала старую версию из кэша.
 (function () {
-  var v = "2339386556" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+  var v = "508394341" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   (_flutter.buildConfig.builds || []).forEach(function (b) {
-    if (b.mainJsPath) b.mainJsPath += '?v=' + v;
+    ['mainJsPath', 'mainWasmPath', 'jsSupportRuntimePath'].forEach(function (k) {
+      if (b[k]) b[k] += '?v=' + v;
+    });
   });
 })();
 
